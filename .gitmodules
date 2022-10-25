@@ -1,0 +1,3 @@
+[submodule "swarm-simulator"]
+	path = swarm-simulator
+	url = https://github.com/kasperg3/swarm-simulator.git
