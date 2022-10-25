@@ -15,6 +15,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+# Include swarm sim from the git submodule
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/swarm-simulator/swarmsim)
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
@@ -25,6 +28,12 @@ add_executable(simulator src/simulator.cpp)
 target_include_directories(simulator PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
+
+
+# Link the swarm sim package to the node
+target_link_libraries(simulator PRIVATE SwarmSim)
+target_include_directories(simulator PUBLIC include)
+
 
 install(TARGETS simulator
   DESTINATION lib/${PROJECT_NAME})
