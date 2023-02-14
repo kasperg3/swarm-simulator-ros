@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(swarm-sim)
+project(swarm_sim)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -20,22 +20,46 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/external/swarm-simulator/swarmsim)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(unique_identifier_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED) # Custom msgs
+
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/RobotState.msg"
+)
+
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(simulator src/simulator.cpp)
+add_executable(simulator src/SimulatorNode.cpp )
 target_include_directories(simulator PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-
-
+  
+  
 # Link the swarm sim package to the node
-target_link_libraries(simulator PRIVATE SwarmSim)
+# ament_target_dependencies(simulator rclcpp std_msgs)
+target_link_libraries(simulator PRIVATE SwarmSim rclcpp::rclcpp )
 
 
-install(TARGETS simulator
+install(TARGETS 
+  simulator
   DESTINATION lib/${PROJECT_NAME})
+
+
+# Install Python modules
+ament_python_install_package(${PROJECT_NAME})
+# Install Python executables
+install(PROGRAMS
+  scripts/robot_node.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
