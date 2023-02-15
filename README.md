@@ -16,7 +16,7 @@
   
 </p>
 
-![Simple Boids example](https://github.com/kasperg3/swarm-simulator/blob/main/assets/swarm-sim-ros.gif)
+![Simple Boids example](https://github.com/kasperg3/swarm-simulator-ros/blob/main/assets/swarm-sim-ros.gif)
 
 A simple implementation of a ros agent using https://github.com/kasperg3/swarm-simulator.git simulation.
 
@@ -32,15 +32,20 @@ sudo apt update && sudo apt install build-essential libasound2-dev mesa-common-d
 
 ### Build
 
-```colcon build
+```
+colcon build && source install/setup.zsh
 ```
 
 ## Run
 To run the simulator, execute the following command:
-```ros2 run swarm_sim simulator```
+```
+ros2 run swarm_sim simulator
+```
 
 Followed by the creation of the agents: 
-```ros2 run swarm_sim robot_node.py```
+```
+ros2 run swarm_sim robot_node.py
+```
 
 
 # Usage
