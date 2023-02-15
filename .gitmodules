@@ -1,6 +1,3 @@
-[submodule "swarm-sim/external/swarm-simulator"]
-	path = swarm-sim/external/swarm-simulator
-	url = https://github.com/kasperg3/swarm-simulator.git
 [submodule "swarm_sim/external/swarm-simulator"]
 	path = swarm_sim/external/swarm-simulator
 	url = https://github.com/kasperg3/swarm-simulator.git

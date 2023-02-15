@@ -26,15 +26,16 @@ public:
     {
         publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
         timer_ = this->create_wall_timer(500ms, std::bind(&SimulatorNode::timer_callback, this));
-        // 20ms is 50 update per second
-        simTimer = this->create_wall_timer(20ms, std::bind(&SimulatorNode::simLoop, this));
+        // 20ms is 50 update per second / 50fps sim
+        simTimer = this->create_wall_timer(16ms, std::bind(&SimulatorNode::simLoop, this));
 
         robot_state_subscriber = this->create_subscription<swarm_sim_interfaces::msg::RobotState>("robot_state", 10, std::bind(&SimulatorNode::topic_callback, this, _1));
 
         // Custom property menu
         std::list<SwarmSim::Widget *> widgetList;
-        SwarmSim::Widget *menu = new SwarmSim::PropertyPanel();
-        widgetList.push_back(menu);
+        // TODO create your own propertypanel, the original might be a good example to start with
+        // SwarmSim::Widget *menu = new SwarmSim::PropertyPanel();
+        // widgetList.push_back(menu);
         simPtr = std::make_shared<SwarmSim::SwarmSimulator>(false, robots, widgetList);
     }
 
@@ -49,17 +50,14 @@ private:
     void topic_callback(const swarm_sim_interfaces::msg::RobotState::SharedPtr msg)
     {
         std::string robotId = msg->id;
-        glm::dvec3 pos(msg->position.x, msg->position.y, msg->position.z);
+        glm::dvec3 pos(msg->position.x, msg->position.z, msg->position.y);
 
         // If a new agent is added, then add it to the simulation
         if (simPtr->hasRobot(robotId))
         {
             // Update the local robot position
-            RCLCPP_INFO_STREAM(this->get_logger(), "Setting robot " << msg->id << " position to: " << pos.x << ", " << pos.y << ", " << pos.z << ", ");
-
-            mtx.lock();
+            RCLCPP_INFO_STREAM(this->get_logger(), "Setting robot " << msg->id << " position to: " << pos.x << ", " << pos.y << ", " << pos.z);
             simPtr->setRobotPosition(robotId, pos);
-            mtx.unlock();
         }
         else
         {
@@ -72,9 +70,7 @@ private:
 
     void simLoop()
     {
-        mtx.lock();
         simPtr->loopOnce();
-        mtx.unlock();
     }
     rclcpp::Subscription<swarm_sim_interfaces::msg::RobotState>::SharedPtr robot_state_subscriber;
     std::map<std::string, SwarmSim::Robot *> robots;
