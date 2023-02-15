@@ -25,27 +25,26 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(unique_identifier_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED) # Custom msgs
 
-
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/RobotState.msg"
-)
-
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+# Own packages
+find_package(swarm_sim_interfaces REQUIRED)
 
 add_executable(simulator src/SimulatorNode.cpp )
 target_include_directories(simulator PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
   
-  
+
+# To be able to use the generated messages in the same package
+# rosidl_target_interfaces(simulator ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+
 # Link the swarm sim package to the node
-# ament_target_dependencies(simulator rclcpp std_msgs)
-target_link_libraries(simulator PRIVATE SwarmSim rclcpp::rclcpp )
+ament_target_dependencies(simulator rclcpp std_msgs geometry_msgs swarm_sim_interfaces)
+target_link_libraries(simulator SwarmSim )
 
 
 install(TARGETS 

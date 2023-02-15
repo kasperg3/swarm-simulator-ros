@@ -53,6 +53,13 @@
         "typeinfo": "cpp",
         "mutex": "cpp",
         "condition_variable": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "map": "cpp",
+        "*.m": "cpp",
+        "csignal": "cpp",
+        "set": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp",
+        "typeindex": "cpp"
     }
 }
